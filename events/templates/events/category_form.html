@@ -1,0 +1,18 @@
+{% extends "events/base.html" %}
+
+{% block mainBody %}
+<section class="max-w-[1440px] mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6">
+        {% if category %}Edit Category{% else %}Add Category{% endif %}
+    </h1>
+
+    <form method="POST" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" 
+                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Submit
+        </button>
+    </form>
+</section>
+{% endblock %}

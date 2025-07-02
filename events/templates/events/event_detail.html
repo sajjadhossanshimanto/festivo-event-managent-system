@@ -1,0 +1,66 @@
+{% extends "events/base.html" %}
+
+{% block mainBody %}
+<main>
+    <!-- Event Detail -->
+    <section class="max-w-[1440px] mx-auto px-4 py-12">
+        <!-- Event Detail Main Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Side: Image -->
+            <div>
+                <img src="{{ event.image_link }}"
+                     alt="{{ event.name }}"
+                     class="w-full h-full object-cover rounded-lg shadow-md" />
+            </div>
+
+            <!-- Right Side: Event Info + Action Buttons -->
+            <div class="flex flex-col justify-between space-y-6">
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'event_update' event.id %}"
+                    class="px-4 py-2 text-sm font-medium border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
+                        Edit Event
+                    </a>
+                    <a href="{% url 'event_delete' event.id %}"
+                    class="px-4 py-2 text-sm font-medium border border-red-600 text-red-600 rounded hover:bg-red-50 transition">
+                        Delete Event
+                    </a>
+                </div>
+
+
+                <!-- Event Info -->
+                <div class="text-gray-700 space-y-2 text-lg">
+                    <h1 class="text-4xl font-bold text-blue-600">{{ event.name }}</h1>
+                    <p><span class="font-semibold">Location:</span> {{ event.location }}</p>
+                    <p><span class="font-semibold">Date:</span> {{ event.date|date:"F j, Y" }}</p>
+                    <p><span class="font-semibold">Time:</span> {{ event.time|time:"P" }}</p>
+                    <p><span class="font-semibold">Category:</span> {{ event.category.name }}</p>
+                    <p class="pt-4">
+                        <span class="font-semibold">Description:</span><br />
+                        {{ event.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participants Section -->
+        <div class="mt-12">
+            <h2 class="text-2xl font-semibold text-blue-600 mb-4">
+                Participants ({{ event.participants.count }})
+            </h2>
+
+            {% if event.participants.exists %}
+                <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700">
+                    {% for participant in event.participants.all %}
+                        <li class="bg-white p-4 shadow rounded">
+                            {{ participant.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-500">No participants yet.</p>
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock mainBody %}

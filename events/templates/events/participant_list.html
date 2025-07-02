@@ -1,0 +1,47 @@
+{% extends "events/base.html" %}
+{% block mainBody %}
+<section class="max-w-[1440px] mx-auto px-4 py-12">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-blue-600">Participants</h1>
+        <a href="{% url 'participant_create' %}" 
+           class="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
+            Add Participant
+        </a>
+    </div>
+    <table class="min-w-full bg-white shadow rounded">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b">Name</th>
+                <th class="py-2 px-4 border-b">Email</th>
+                <th class="py-2 px-4 border-b">Events</th>
+                <th class="py-2 px-4 border-b">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants %}
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-4 border-b">{{ participant.name }}</td>
+                <td class="py-2 px-4 border-b">{{ participant.email }}</td>
+                <td class="py-2 px-4 border-b">
+                    {% for event in participant.events.all %}
+                        <span class="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded mr-1 text-xs">
+                            {{ event.name }}
+                        </span>
+                    {% empty %}
+                        No events
+                    {% endfor %}
+                </td>
+                <td class="py-2 px-4 border-b space-x-2">
+                    <a href="{% url 'participant_update' participant.id %}" class="text-blue-600 hover:underline">Edit</a>
+                    <a href="{% url 'participant_delete' participant.id %}" class="text-red-600 hover:underline">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center py-4">No participants found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
