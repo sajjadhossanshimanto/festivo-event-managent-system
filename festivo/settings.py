@@ -84,26 +84,26 @@ WSGI_APPLICATION = 'festivo.wsgi.application'
 # }
 
 # For Postgres
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'festivo',
-#         'USER': 'postgres',
-#         'PASSWORD': 'weird',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'festivo',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
 
 
 #for deployment on Render
-DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://festivo_db_user:kr3kGm9Yh2bTlcYTGbRqioZgTFJDvw8S@dpg-d1hbcnndiees738lt8r0-a.oregon-postgres.render.com/festivo_db',
-        conn_max_age=600
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://festivo_db_user:kr3kGm9Yh2bTlcYTGbRqioZgTFJDvw8S@dpg-d1hbcnndiees738lt8r0-a.oregon-postgres.render.com/festivo_db',
+#         conn_max_age=600
+#     )
+# }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
