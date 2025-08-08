@@ -8,8 +8,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Left Side: Image -->
             <div>
-                <img src="{{ event.image_link }}"
-                     alt="{{ event.name }}"
+                <img src="{{ event.image.url }}"
                      class="w-full h-full object-cover rounded-lg shadow-md" />
             </div>
 
@@ -46,12 +45,12 @@
         <!-- Participants Section -->
         <div class="mt-12">
             <h2 class="text-2xl font-semibold text-blue-600 mb-4">
-                Participants ({{ event.participants.count }})
+                Participants ({{ event.rsvp.count }})
             </h2>
 
-            {% if event.participants.exists %}
+            {% if event.rsvp.exists %}
                 <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700">
-                    {% for participant in event.participants.all %}
+                    {% for participant in event.rsvp.all %}
                         <li class="bg-white p-4 shadow rounded">
                             {{ participant.name }}
                         </li>
