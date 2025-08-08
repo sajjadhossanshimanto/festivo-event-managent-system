@@ -1,4 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+
+def file_location(instance, filename):
+    return f'events/{filename}'
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -8,7 +14,7 @@ class Category(models.Model):
         return self.name
 
 class Event(models.Model):
-    image_link = models.CharField(max_length=500, default="https://img.freepik.com/premium-vector/events-big-text-online-corporate-party-meeting-friends-colleagues-video-conference_501813-9.jpg")
+    image = models.ImageField(upload_to=file_location, null=True, blank=True, default=file_location('', 'default.png'))
     name = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateField()

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Event, Category
+from events.models import Event, Category
+
 
 DEFAULT_CLASSES = (
     "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 " 
@@ -9,12 +10,8 @@ DEFAULT_CLASSES = (
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['image_link', 'name', 'description', 'date', 'time', 'location', 'category']
+        fields = ['image', 'name', 'description', 'date', 'time', 'location', 'category']
         widgets = {
-            'image_link': forms.URLInput(attrs={
-                'class': DEFAULT_CLASSES,
-                'placeholder': 'Enter image URL',
-            }),
             'name': forms.TextInput(attrs={
                 'class': DEFAULT_CLASSES,
                 'placeholder': 'Enter event name',
@@ -41,8 +38,8 @@ class EventForm(forms.ModelForm):
                 'class': DEFAULT_CLASSES,
             }),
         }
+        
         labels = {
-            'image_link': 'Image URL',
             'name': 'Event Name',
             'description': 'Description',
             'date': 'Date',
