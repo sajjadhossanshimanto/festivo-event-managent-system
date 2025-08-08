@@ -1,5 +1,5 @@
 from django import forms
-from .models import Event, Category, Participant
+from .models import Event, Category
 
 DEFAULT_CLASSES = (
     "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 " 
@@ -66,21 +66,3 @@ class CategoryForm(forms.ModelForm):
             }),
         }
 
-class ParticipantForm(forms.ModelForm):
-    class Meta:
-        model = Participant
-        fields = ['name', 'email', 'events']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': DEFAULT_CLASSES,
-                'placeholder': 'Enter participant name',
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': DEFAULT_CLASSES,
-                'placeholder': 'Enter email address',
-            }),
-            'events': forms.SelectMultiple(attrs={
-                'class': DEFAULT_CLASSES,
-                'size': 5,  # for better UI on multiple select
-            }),
-        }

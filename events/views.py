@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Event, Category, Participant
+from .models import Event, Category
 from django.utils.timezone import now
-from .forms import EventForm, CategoryForm, ParticipantForm
+from .forms import EventForm, CategoryForm
 from django.contrib import messages
 from django.db.models import Q
 
@@ -98,6 +98,7 @@ def event_delete(request, id):
 def participant_list(request):
     participants = Participant.objects.all().order_by('name')
     return render(request, 'events/participant_list.html', {'participants': participants})
+
 # Create a new participant
 def participant_create(request):
     if request.method == 'POST':
