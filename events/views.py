@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
-from .models import Event, Category
 from django.utils.timezone import now
-from .forms import EventForm, CategoryForm
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.db.models import Q
 
-# List all events
+from events.models import Event, Category
+from events.forms import EventForm, CategoryForm
+from users.views import *
+
+
 def event_list(request):
     today = now().date()
     type = request.GET.get('type', 'today')
@@ -37,7 +40,7 @@ def event_list(request):
         )
 
 
-    events = events.select_related('category').prefetch_related('participants').order_by('date', 'time')
+    events = events.select_related('category').prefetch_related('rsvp').order_by('date', 'time')
 
     context = {
         'events': events,
@@ -47,21 +50,19 @@ def event_list(request):
             'past': Event.objects.filter(date__lt=today).count(),
             'upcoming': Event.objects.filter(date__gt=today).count(),
             'today': Event.objects.filter(date=today).count(),
-            'total_participants': Participant.objects.count(),
+            'total_participants': User.objects.count(),
         }
     }
     return render(request, 'events/event_list.html', context)
 
 
-# Event detail view
 def event_detail(request, id):
     event = Event.objects.get(id=id)
     return render(request, 'events/event_detail.html', {'event': event})
 
-# Create new event
 def event_create(request):
     if request.method == 'POST':
-        form = EventForm(request.POST)
+        form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Event created successfully!')
@@ -70,7 +71,6 @@ def event_create(request):
         form = EventForm()
     return render(request, 'events/event_form.html', {'form': form})
 
-# Update an event
 def event_update(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
@@ -83,7 +83,6 @@ def event_update(request, id):
         form = EventForm(instance=event)
     return render(request, 'events/event_form.html', {'form': form, 'event': event})
 
-# Delete an event
 def event_delete(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
@@ -92,55 +91,11 @@ def event_delete(request, id):
         return redirect('event_list')
     return render(request, 'events/event_confirm_delete.html', {'event': event})
 
-
-# Participant:::
-# List all participants
-def participant_list(request):
-    participants = Participant.objects.all().order_by('name')
-    return render(request, 'events/participant_list.html', {'participants': participants})
-
-# Create a new participant
-def participant_create(request):
-    if request.method == 'POST':
-        form = ParticipantForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Participant added successfully!")
-            return redirect('participant_list')
-    else:
-        form = ParticipantForm()
-    return render(request, 'events/participant_form.html', {'form': form})
-
-# Update participant
-def participant_update(request, id):
-    participant = Participant.objects.get(id=id)
-    if request.method == 'POST':
-        form = ParticipantForm(request.POST, instance=participant)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Participant updated successfully!")
-            return redirect('participant_list')
-    else:
-        form = ParticipantForm(instance=participant)
-    return render(request, 'events/participant_form.html', {'form': form, 'participant': participant})
-
-# Delete participant
-def participant_delete(request, id):
-    participant = Participant.objects.get(id=id)
-    if request.method == 'POST':
-        participant.delete()
-        messages.success(request, "Participant deleted successfully!")
-        return redirect('participant_list')
-    return render(request, 'events/participant_confirm_delete.html', {'participant': participant})
-
-
 # Category:::
-# List Categories
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'events/category_list.html', {'categories': categories})
 
-# Create Category
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -152,7 +107,6 @@ def category_create(request):
         form = CategoryForm()
     return render(request, 'events/category_form.html', {'form': form})
 
-# Update Category
 def category_update(request, id):
     category = Category.objects.get(id=id)
     if request.method == 'POST':
@@ -165,7 +119,6 @@ def category_update(request, id):
         form = CategoryForm(instance=category)
     return render(request, 'events/category_form.html', {'form': form, 'category': category})
 
-# Delete Category
 def category_delete(request, id):
     category = Category.objects.get(id=id)
     if request.method == 'POST':
