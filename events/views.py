@@ -6,7 +6,6 @@ from django.db.models import Q
 
 from events.models import Event, Category
 from events.forms import EventForm, CategoryForm
-from users.views import * # temporary fix 
 
 
 def event_list(request):

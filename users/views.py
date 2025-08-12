@@ -1,8 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserForm
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
+from users.forms import SignUpForm, LoginForm
+# from users.models import User
+from users.forms import UserForm
 
 
 # Participant:::
@@ -12,25 +18,25 @@ def participant_list(request):
 
 def participant_create(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Participant added successfully!")
             return redirect('participant_list')
     else:
-        form = UserCreationForm()
+        form = UserForm()
     return render(request, 'events/participant_form.html', {'form': form})
 
 def participant_update(request, id):
     participant = User.objects.get(id=id)
     if request.method == 'POST':
-        form = UserCreationForm(request.POST, instance=participant)
+        form = UserForm(request.POST, instance=participant)
         if form.is_valid():
             form.save()
             messages.success(request, "Participant updated successfully!")
             return redirect('participant_list')
     else:
-        form = UserCreationForm(instance=participant)
+        form = UserForm(instance=participant)
     return render(request, 'events/participant_form.html', {'form': form, 'participant': participant})
 
 def participant_delete(request, id):
@@ -40,3 +46,40 @@ def participant_delete(request, id):
         messages.success(request, "Participant deleted successfully!")
         return redirect('participant_list')
     return render(request, 'events/participant_confirm_delete.html', {'participant': participant})
+
+
+def signup_view(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = SignUpForm()
+    return render(request, 'users/signup.html')
+
+def login_view(request):
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = LoginForm()
+    return render(request, 'users/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+# @login_required
+def dashboard_view(request):
+    # TODO:
+    if request.user.role == 'admin':
+        return render(request, 'users/dashboard/admin.html')
+    elif request.user.role == 'manager':
+        return render(request, 'users/dashboard/manager.html')
+    else:
+        return render(request, 'users/dashboard/user.html')
