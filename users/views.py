@@ -16,17 +16,6 @@ def participant_list(request):
     participants = User.objects.all()
     return render(request, 'events/participant_list.html', {'participants': participants})
 
-def participant_create(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Participant added successfully!")
-            return redirect('participant_list')
-    else:
-        form = UserForm()
-    return render(request, 'events/participant_form.html', {'form': form})
-
 def participant_update(request, id):
     participant = User.objects.get(id=id)
     if request.method == 'POST':
