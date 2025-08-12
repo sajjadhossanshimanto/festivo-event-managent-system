@@ -28,7 +28,7 @@
     </style>
 </head>
 
-<body class="pt-16 bg-gray-50">
+<body class="pt-16 bg-gray-50 flex flex-col min-h-screen">
     <header>
         <section>
             <!-- Navbar -->
@@ -68,9 +68,10 @@
         </section>
     </header>
 
-    {% block mainBody %}
-        {% comment %} Main Body will be here {% endcomment %}
-    {% endblock mainBody %}
+    <main class="flex-grow pt-20">
+        {% block mainBody %}
+        {% endblock mainBody %}
+    </main>
 
     <footer class="bg-white border-t mt-12">
         <div
