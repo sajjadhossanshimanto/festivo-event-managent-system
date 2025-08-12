@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import participant_list, participant_update, participant_delete
+from users.views import participant_list, participant_update, participant_delete, no_permission
 from users import views
 
 
@@ -12,4 +12,6 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
+
+    path("unauthurized/", no_permission, name='no-permission'),
 ]

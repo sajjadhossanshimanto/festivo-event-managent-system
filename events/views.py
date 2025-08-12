@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect
 from django.utils.timezone import now
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.db.models import Q
 
 from events.models import Event, Category
 from events.forms import EventForm, CategoryForm
 
 
+# :: events related functions ::
+@permission_required('view_event', login_url='no-permission')
 def event_list(request):
     today = now().date()
     type = request.GET.get('type', 'today')
@@ -54,7 +57,6 @@ def event_list(request):
     }
     return render(request, 'events/event_list.html', context)
 
-
 def event_detail(request, id):
     event = Event.objects.get(id=id)
     return render(request, 'events/event_detail.html', {'event': event})
@@ -90,7 +92,7 @@ def event_delete(request, id):
         return redirect('event_list')
     return render(request, 'events/event_confirm_delete.html', {'event': event})
 
-# Category:::
+# :: Category ::
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'events/category_list.html', {'categories': categories})
