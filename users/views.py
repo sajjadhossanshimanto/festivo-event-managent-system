@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 
-from users.forms import SignUpForm, LoginForm
+from users.forms import LoginForm
 # from users.models import User
 from users.forms import UserForm
 
@@ -50,14 +50,14 @@ def participant_delete(request, id):
 
 def signup_view(request):
     if request.method == "POST":
-        form = SignUpForm(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('dashboard')
     else:
-        form = SignUpForm()
-    return render(request, 'users/signup.html')
+        form = UserForm()
+    return render(request, 'users/signup.html', {'form': form})
 
 def login_view(request):
     if request.method == "POST":
