@@ -63,12 +63,19 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-# @login_required
+def is_admin(user):
+    return user.groups.filter(name="Admin").exists()
+
+def is_manager(user):
+    return user.groups.filter(name="Manager").exists()
+
+@login_required
 def dashboard_view(request):
     # TODO:
-    if request.user.role == 'admin':
+    print(request.user.groups.name)
+    if is_admin(request.user):
         return render(request, 'users/dashboard/admin.html')
-    elif request.user.role == 'manager':
+    elif is_manager(request.user):
         return render(request, 'users/dashboard/manager.html')
     else:
         return render(request, 'users/dashboard/user.html')
