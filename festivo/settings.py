@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-lm6)y&(ee_-60bnk32-*&!0s09^=glwxe$3#^k%#g^$dv+60c!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*', "festivo-event-managent-system-1.onrender.com",]
-CFRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'http://127.0.0.1:8000', 'https://festivo-event-managent-system-1.onrender.com']
+CFRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'http://127.0.0.1:8000', 'https://festivo-event-managent-system-dgte.onrender.com']
 
 
 # Application definition
@@ -87,26 +87,26 @@ WSGI_APPLICATION = 'festivo.wsgi.application'
 # }
 
 # For Postgres
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'festivo',
-        'USER': 'postgres',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'festivo',
+#         'USER': 'postgres',
+#         'PASSWORD': '123456',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
 
 
 #for deployment on Render
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://festivo_db_user:kr3kGm9Yh2bTlcYTGbRqioZgTFJDvw8S@dpg-d1hbcnndiees738lt8r0-a.oregon-postgres.render.com/festivo_db',
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://event_management_2_u4je_user:BFOHOezsOPz6VVGD2pZLVQbZaEqzQWKY@dpg-d2eblcadbo4c7388qrg0-a.oregon-postgres.render.com/event_management_2_u4je',
+        conn_max_age=600
+    )
+}
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
