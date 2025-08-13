@@ -1,4 +1,5 @@
 {% load static %}
+{% load group_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,6 +44,7 @@
 
                         <!-- Menu items -->
                         <div class="space-x-6">
+                            {% group_features as features %}
                             {% for label, link in features %}
                                 <a href="{% url link %}" class="text-gray-700 hover:text-blue-600 text-md font-medium">{{label}}</a>
                             {% endfor %}

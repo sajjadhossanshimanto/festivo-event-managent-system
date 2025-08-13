@@ -144,29 +144,6 @@ def category_delete(request, id):
 
 
 # :: Uncatagory ::
-user_features = (
-    ('View All Events', 'event_list'),
-    ('Logout', 'logout'),
-)
-manager_features = (
-    ('Create Event', 'event_create'),
-    ('Categories', 'category_list'),
-) + user_features
-admin_features = (
-    ('Manage Accounts', 'participant_list'),
-) + manager_features
 
-def dashboard(request):
-    features = tuple()
-    if not request.user.is_authenticated:
-        return redirect('login')
-    elif is_admin(request.user):
-        features = admin_features
-    elif is_manager(request.user):
-        features = manager_features
-    else:
-        features = user_features
-    
-    # features += cummon_features
-    # print(features)
-    return render(request, 'events/intro.html', {'features': features})
+def dashboard(request):     
+    return render(request, 'events/intro.html')

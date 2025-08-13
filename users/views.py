@@ -85,7 +85,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('dashboard')
+            return redirect('home')
     else:
         form = UserForm()
     return render(request, 'users/signup.html', {'form': form})
@@ -96,7 +96,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('dashboard')
+            return redirect('home')
     else:
         form = LoginForm()
     return render(request, 'users/login.html', {'form': form})
