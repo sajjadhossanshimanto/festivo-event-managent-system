@@ -23,7 +23,7 @@ admin_features = (
 def group_features(context):
     user = context['user']
     if not user.is_authenticated:
-        return [('Login', 'login')]
+        return [('Login', 'login'), ('Sign Up', 'signup')]
     elif is_admin(user):
         return admin_features
     elif is_manager(user):
