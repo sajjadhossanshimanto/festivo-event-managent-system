@@ -16,7 +16,7 @@ def rsvp_email_notification(sender, instance, action, pk_set, **kwargs):
 				send_mail(
 					subject=f'RSVP Confirmation for {event.name}',
 					message=f'Hi {user.username},\n\nYou have successfully RSVPed to the event: {event.name} on {event.date} at {event.location}.',
-					from_email=settings.EMAIL_SENDER,
+					from_email=settings.EMAIL_HOST_USER,
 					recipient_list=[user.email],
 					fail_silently=True,
 				)

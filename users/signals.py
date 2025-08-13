@@ -18,7 +18,7 @@ def send_activation_mail(sender, instance, created, **kwargs):
     send_mail(
         subject="Activation mail",
         message=message_body,
-        from_email=settings.EMAIL_SENDER,
+        from_email=settings.EMAIL_HOST_USER,
         recipient_list=[instance.email]
     )
 
