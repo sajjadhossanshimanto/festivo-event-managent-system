@@ -82,6 +82,7 @@ def signup_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            messages.success(request, "Activation email has been send")
             return redirect('home')
     else:
         form = UserForm()

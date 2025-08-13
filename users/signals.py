@@ -21,7 +21,6 @@ def send_activation_mail(sender, instance, created, **kwargs):
         from_email=settings.EMAIL_SENDER,
         recipient_list=[instance.email]
     )
-    messages.success("Activation email has been send")
 
 @receiver(post_save, sender=User)
 def assign_role(sender, instance, created, **kwargs):
