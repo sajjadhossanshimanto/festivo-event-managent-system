@@ -55,7 +55,7 @@
                 <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700">
                     {% for participant in event.rsvp.all %}
                         <li class="bg-white p-4 shadow rounded">
-                            {{ participant.name }}
+                            {{ participant.username }}
                         </li>
                     {% endfor %}
                 </ul>
