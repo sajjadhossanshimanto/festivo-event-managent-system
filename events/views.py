@@ -43,6 +43,8 @@ def event_list(request):
 
 
     events = events.select_related('category').prefetch_related('rsvp').order_by('date', 'time')
+    rsvp_items = request.user.rsvp.values_list('id', flat=True)
+    print(rsvp_items)
 
     context = {
         'events': events,
@@ -52,7 +54,8 @@ def event_list(request):
             'past': Event.objects.filter(date__lt=today).count(),
             'upcoming': Event.objects.filter(date__gt=today).count(),
             'today': Event.objects.filter(date=today).count(),
-        }
+        },
+        'rsvp_items': rsvp_items,
     }
     return render(request, 'events/event_list.html', context)
 
@@ -90,6 +93,11 @@ def event_delete(request, id):
         messages.success(request, 'Event deleted successfully!')
         return redirect('event_list')
     return render(request, 'events/event_confirm_delete.html', {'event': event})
+
+def rsvp_event(request, user_id, event_id):
+    print(user_id, event_id)
+    Event.objects.get(id=event_id).rsvp.add(User.objects.get(id=user_id))
+    return redirect('event_list')
 
 # :: Category ::
 def category_list(request):

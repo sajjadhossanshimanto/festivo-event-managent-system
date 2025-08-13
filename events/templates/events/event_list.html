@@ -117,10 +117,16 @@
                             View Details
                         </a>
 
-                        <a href="{% url 'rsvp_event' user.id event.id %}"
-                        class="mt-auto self-start px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition inline-block text-center">
-                            RSVP
-                        </a>
+                        {% if event.id in rsvp_items %}
+                            <button class="mt-auto self-start px-4 py-2 border border-gray-400 text-gray-400 rounded cursor-not-allowed inline-block text-center" disabled>
+                                RSVP'd
+                            </button>
+                        {% else %}
+                            <a href="{% url 'rsvp_event' user.id event.id %}"
+                            class="mt-auto self-start px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition inline-block text-center">
+                                RSVP
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
