@@ -75,11 +75,10 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-@login_required
 def dashboard_view(request):
-    # TODO:
-    print(request.user.groups.name)
-    if is_admin(request.user):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    elif is_admin(request.user):
         return render(request, 'users/dashboard/admin.html')
     elif is_manager(request.user):
         return render(request, 'users/dashboard/manager.html')
