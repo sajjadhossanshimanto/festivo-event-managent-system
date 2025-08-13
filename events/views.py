@@ -11,7 +11,9 @@ from users.views import is_admin, is_manager
 
 
 # :: events related functions ::
-@permission_required('view_event', login_url='no-permission')
+
+# @permission_required('view_event', login_url='no-permission')# not working
+@login_required(login_url='login')
 def event_list(request):
     user = request.user
     today = now().date()
