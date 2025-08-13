@@ -7,6 +7,7 @@ from django.db.models import Q
 
 from events.models import Event, Category
 from events.forms import EventForm, CategoryForm
+from users.views import is_admin, is_manager
 
 
 # :: events related functions ::
@@ -64,7 +65,8 @@ def event_list(request):
 
 def event_detail(request, id):
     event = Event.objects.get(id=id)
-    return render(request, 'events/event_detail.html', {'event': event})
+    edit_right = is_admin(request.user) or is_manager(request.user)
+    return render(request, 'events/event_detail.html', {'event': event, 'edit_right': edit_right})
 
 def event_create(request):
     if request.method == 'POST':
