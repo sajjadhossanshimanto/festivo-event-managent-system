@@ -43,7 +43,8 @@ def event_list(request):
     if search_query:
         events = events.filter(
             Q(name__icontains=search_query) |
-            Q(location__icontains=search_query)
+            Q(location__icontains=search_query) |
+            Q(description__icontains=search_query) 
         )
 
 
