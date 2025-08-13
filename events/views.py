@@ -163,5 +163,5 @@ def category_delete(request, id):
 
 # :: Uncatagory ::
 
-def dashboard(request):     
+def dashboard(request):
     return render(request, 'events/intro.html')

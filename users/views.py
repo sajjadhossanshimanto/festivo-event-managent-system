@@ -1,5 +1,6 @@
 from django import forms
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User, Group
 # from django.contrib.auth.forms import UserForm
 from django.contrib import messages
@@ -78,8 +79,9 @@ def signup_view(request):
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
             return redirect('home')
     else:
         form = UserForm()
@@ -90,11 +92,32 @@ def login_view(request):
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            if not user.is_active:
+                messages.error(request, "Please activate your account first. Check your email for the activation link.")
+                return render(request, 'users/login.html', {'form': form})
             login(request, user)
             return redirect('home')
     else:
         form = LoginForm()
     return render(request, 'users/login.html', {'form': form})
+
+def activate_user(request, user_id:int, token:str):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return HttpResponse("user does not exist")
+
+    if default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Your account have been activated.")
+        login(request, user)
+        return redirect('home')
+    else:
+        return HttpResponse('Invalid Id or token')
+    
+    return redirect("login")
+
 
 # @login_required
 def logout_view(request):

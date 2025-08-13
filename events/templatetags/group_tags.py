@@ -28,5 +28,7 @@ def group_features(context):
         return admin_features
     elif is_manager(user):
         return manager_features
-    else:
+    elif user.is_active:
         return user_features
+    
+    return []

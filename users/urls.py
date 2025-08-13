@@ -11,6 +11,8 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('activate/<int:user_id>/<str:token>/', views.activate_user),
+
 
     path("unauthurized/", no_permission, name='no-permission'),
 ]
