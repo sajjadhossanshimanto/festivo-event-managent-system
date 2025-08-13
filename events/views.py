@@ -12,8 +12,8 @@ from users.views import is_admin, is_manager
 
 # :: events related functions ::
 
-# @permission_required('view_event', login_url='no-permission')# not working
 @login_required(login_url='login')
+@permission_required('events.view_event', login_url='no-permission')
 def event_list(request):
     user = request.user
     today = now().date()
@@ -66,11 +66,15 @@ def event_list(request):
     }
     return render(request, 'events/event_list.html', context)
 
+@login_required(login_url='login')
+@permission_required('events.view_event', login_url='no-permission')
 def event_detail(request, id):
     event = Event.objects.get(id=id)
     edit_right = is_admin(request.user) or is_manager(request.user)
     return render(request, 'events/event_detail.html', {'event': event, 'edit_right': edit_right})
 
+@login_required(login_url='login')
+@permission_required('events.add_event', login_url='no-permission')
 def event_create(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
@@ -82,6 +86,8 @@ def event_create(request):
         form = EventForm()
     return render(request, 'events/event_form.html', {'form': form})
 
+@login_required(login_url='login')
+@permission_required('events.change_event', login_url='no-permission')
 def event_update(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
@@ -94,6 +100,8 @@ def event_update(request, id):
         form = EventForm(instance=event)
     return render(request, 'events/event_form.html', {'form': form, 'event': event})
 
+@login_required(login_url='login')
+@permission_required('events.delete_event', login_url='no-permission')
 def event_delete(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
@@ -102,16 +110,21 @@ def event_delete(request, id):
         return redirect('event_list')
     return render(request, 'events/event_confirm_delete.html', {'event': event})
 
+@login_required(login_url='login')
 def rsvp_event(request, user_id, event_id):
     print(user_id, event_id)
     Event.objects.get(id=event_id).rsvp.add(User.objects.get(id=user_id))
     return redirect('event_list')
 
 # :: Category ::
+@login_required(login_url='login')
+@permission_required('events.view_category', login_url='no-permission')
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'events/category_list.html', {'categories': categories})
 
+@login_required(login_url='login')
+@permission_required('events.add_category', login_url='no-permission')
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -123,6 +136,8 @@ def category_create(request):
         form = CategoryForm()
     return render(request, 'events/category_form.html', {'form': form})
 
+@login_required(login_url='login')
+@permission_required('events.change_category', login_url='no-permission')
 def category_update(request, id):
     category = Category.objects.get(id=id)
     if request.method == 'POST':
@@ -135,6 +150,8 @@ def category_update(request, id):
         form = CategoryForm(instance=category)
     return render(request, 'events/category_form.html', {'form': form, 'category': category})
 
+@login_required(login_url='login')
+@permission_required('events.delete_category', login_url='no-permission')
 def category_delete(request, id):
     category = Category.objects.get(id=id)
     if request.method == 'POST':
