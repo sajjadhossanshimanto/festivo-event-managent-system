@@ -4,29 +4,9 @@
 {% block mainBody %}
 <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">Create an Account</h2>
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        {% for field in form %}
-            <div>
-                <label for="{{ field.id_for_label }}" class="block text-gray-700 font-medium">
-                    {{ field.label }}
-                </label>
-                {{ field }}
-                {% if field.help_text %}
-                    <div class="text-sm text-gray-500 mt-1">
-                        {{ field.help_text|safe }}
-                    </div>
-                {% endif %}
-                {% if field.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-        <button type="submit"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
-            Sign Up
-        </button>
-    </form>
+    
+    {% include "users/participant_form.html" %}
+
     <p class="mt-4 text-center text-sm">
         Already have an account?
         <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Login</a>

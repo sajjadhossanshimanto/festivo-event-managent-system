@@ -36,7 +36,7 @@ def participant_update(request, id):
             return redirect('participant_list')
     else:
         form = UserForm(instance=participant)
-    return render(request, 'users/participant_form.html', {'form': form, 'participant': participant})
+    return render(request, 'users/participant_edit.html', {'form': form, 'participant': participant})
 
 def participant_delete(request, id):
     participant = User.objects.get(id=id)
