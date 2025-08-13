@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test, per
 
 from users.forms import LoginForm
 # from users.models import User
-from users.forms import UserForm
+from users.forms import UserForm, UserEditForm
 
 
 # permisiion functions
@@ -30,39 +30,28 @@ def participant_list(request):
 def participant_update(request, id):
     participant = User.objects.get(id=id)
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=participant)
-        # add role field
-        form.fields['role'] = forms.ModelChoiceField(
-            queryset=Group.objects.all(),
-            required=False,
-            label='Role',
-            widget=forms.Select(attrs={
-                'class': 'w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
-            })
-        )
+        form = UserEditForm(request.POST, instance=participant)
+
         if form.is_valid():
-            user = form.save(commit=False)
-            # Update role (group)
-            role = form.cleaned_data.get('role')
-            if role:
-                user.groups.clear()
-                user.groups.add(role)
+            # Check for username uniqueness only if changed
+            username = form.cleaned_data.get('username')
+            if User.objects.exclude(id=participant.id).filter(username=username).exists():
+                form.add_error('username', 'This username is already taken.')
             else:
-                user.groups.clear()
-            user.save()
-            messages.success(request, "Participant updated successfully!")
-            return redirect('participant_list')
+                user = form.save(commit=False)
+                # Update role (group)
+                role = form.cleaned_data.get('role')
+                if role:
+                    user.groups.clear()
+                    user.groups.add(role)
+                else:
+                    user.groups.clear()
+                user.save()
+                messages.success(request, "Participant updated successfully!")
+                return redirect('participant_list')
     else:
-        form = UserForm(instance=participant)
-        # Add role field dynamically
-        form.fields['role'] = forms.ModelChoiceField(
-            queryset=Group.objects.all(),
-            required=False,
-            label='Role',
-            widget=forms.Select(attrs={
-                'class': 'w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
-            })
-        )
+        form = UserEditForm(instance=participant)
+
         # Pre-select the user's current group
         user_groups = participant.groups.all()
         if user_groups.exists():
