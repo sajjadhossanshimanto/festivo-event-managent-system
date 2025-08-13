@@ -91,7 +91,7 @@ def event_create(request):
 def event_update(request, id):
     event = Event.objects.get(id=id)
     if request.method == 'POST':
-        form = EventForm(request.POST, instance=event)
+        form = EventForm(request.POST, request.FILES, instance=event)
         if form.is_valid():
             form.save()
             messages.success(request, 'Event updated successfully!')
