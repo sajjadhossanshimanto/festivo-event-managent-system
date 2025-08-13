@@ -24,7 +24,7 @@ def no_permission(request):
 # participant-functions 
 def participant_list(request):
     participants = User.objects.all()
-    return render(request, 'events/participant_list.html', {'participants': participants})
+    return render(request, 'users/participant_list.html', {'participants': participants})
 
 def participant_update(request, id):
     participant = User.objects.get(id=id)
@@ -36,7 +36,7 @@ def participant_update(request, id):
             return redirect('participant_list')
     else:
         form = UserForm(instance=participant)
-    return render(request, 'events/participant_form.html', {'form': form, 'participant': participant})
+    return render(request, 'users/participant_form.html', {'form': form, 'participant': participant})
 
 def participant_delete(request, id):
     participant = User.objects.get(id=id)
@@ -44,7 +44,7 @@ def participant_delete(request, id):
         participant.delete()
         messages.success(request, "Participant deleted successfully!")
         return redirect('participant_list')
-    return render(request, 'events/participant_confirm_delete.html', {'participant': participant})
+    return render(request, 'users/participant_confirm_delete.html', {'participant': participant})
 
 
 # login- logout
