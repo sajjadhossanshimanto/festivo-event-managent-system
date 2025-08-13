@@ -13,7 +13,7 @@ from events.forms import EventForm, CategoryForm
 @permission_required('view_event', login_url='no-permission')
 def event_list(request):
     today = now().date()
-    type = request.GET.get('type', 'today')
+    type_ = request.GET.get('type', 'all')
     # type = type if type in ['past', 'upcoming', 'all'] else 'today'
     category_filter = request.GET.get('category')
 
@@ -21,15 +21,15 @@ def event_list(request):
 
     # Category-based 
     if category_filter:
-        type = 'all'  
+        type_ = 'all'
         events = events.filter(category__id=category_filter)
 
     # Date-based 
-    if type == 'past':
+    if type_ == 'past':
         events = events.filter(date__lt=today)
-    elif type == 'upcoming':
+    elif type_ == 'upcoming':
         events = events.filter(date__gt=today)
-    elif type == 'today':
+    elif type_ == 'today':
         events = events.filter(date=today)
 
 
@@ -52,7 +52,6 @@ def event_list(request):
             'past': Event.objects.filter(date__lt=today).count(),
             'upcoming': Event.objects.filter(date__gt=today).count(),
             'today': Event.objects.filter(date=today).count(),
-            'total_participants': User.objects.count(),
         }
     }
     return render(request, 'events/event_list.html', context)
