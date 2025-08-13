@@ -14,17 +14,20 @@
 
             <!-- Right Side: Event Info + Action Buttons -->
             <div class="flex flex-col justify-between space-y-6">
-                <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4">
-                    <a href="{% url 'event_update' event.id %}"
-                    class="px-4 py-2 text-sm font-medium border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
-                        Edit Event
-                    </a>
-                    <a href="{% url 'event_delete' event.id %}"
-                    class="px-4 py-2 text-sm font-medium border border-red-600 text-red-600 rounded hover:bg-red-50 transition">
-                        Delete Event
-                    </a>
-                </div>
+                    {% if edit_right %}
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-4">
+                        <a href="{% url 'event_update' event.id %}"
+                        class="px-4 py-2 text-sm font-medium border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
+                            Edit Event
+                        </a>
+                        <a href="{% url 'event_delete' event.id %}"
+                        class="px-4 py-2 text-sm font-medium border border-red-600 text-red-600 rounded hover:bg-red-50 transition">
+                            Delete Event
+                        </a>
+                    </div>
+                    {% endif %}
+
 
 
                 <!-- Event Info -->
@@ -52,7 +55,7 @@
                 <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-gray-700">
                     {% for participant in event.rsvp.all %}
                         <li class="bg-white p-4 shadow rounded">
-                            {{ participant.name }}
+                            {{ participant.username }}
                         </li>
                     {% endfor %}
                 </ul>

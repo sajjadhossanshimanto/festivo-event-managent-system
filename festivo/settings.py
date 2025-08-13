@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "debug_toolbar",
     'events',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -159,3 +160,8 @@ INTERNAL_IPS = [
 # media managing
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'media/'
+
+
+# emails
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_SENDER = 'abc@gmail.com'# var nam is user defined

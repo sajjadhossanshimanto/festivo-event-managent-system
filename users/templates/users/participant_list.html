@@ -3,7 +3,7 @@
 <section class="max-w-[1440px] mx-auto px-4 py-12">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-blue-600">Participants</h1>
-        <a href="{% url 'participant_create' %}" 
+        <a href="{% url 'signup' %}" 
            class="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
             Add Participant
         </a>
@@ -11,8 +11,11 @@
     <table class="min-w-full bg-white shadow rounded">
         <thead>
             <tr>
-                <th class="py-2 px-4 border-b">Name</th>
+                <th class="py-2 px-4 border-b">User Name</th>
+                <th class="py-2 px-4 border-b">First Name</th>
+                <th class="py-2 px-4 border-b">Last Name</th>
                 <th class="py-2 px-4 border-b">Email</th>
+                <th class="py-2 px-4 border-b">Role</th>
                 <th class="py-2 px-4 border-b">Events</th>
                 <th class="py-2 px-4 border-b">Actions</th>
             </tr>
@@ -20,10 +23,14 @@
         <tbody>
             {% for participant in participants %}
             <tr class="hover:bg-gray-100">
-                <td class="py-2 px-4 border-b">{{ participant.name }}</td>
+                <td class="py-2 px-4 border-b">{{ participant.username }}</td>
+                <td class="py-2 px-4 border-b">{{ participant.first_name }}</td>
+                <td class="py-2 px-4 border-b">{{ participant.last_name }}</td>
                 <td class="py-2 px-4 border-b">{{ participant.email }}</td>
+                <td class="py-2 px-4 border-b">{{ participant.groups.first.name }}</td>
+
                 <td class="py-2 px-4 border-b">
-                    {% for event in participant.events.all %}
+                    {% for event in participant.rsvp.all %}
                         <span class="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded mr-1 text-xs">
                             {{ event.name }}
                         </span>

@@ -1,0 +1,23 @@
+{% extends "events/base.html" %}
+
+{% block mainBody %}
+<!-- Hero Section -->
+    <section
+        class="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-gradient-to-r from-blue-100/10 to-blue-100/20 text-center px-4">
+        <div>
+            <h1 class="text-6xl sm:text-7xl lg:text-8xl font-extrabold text-blue-600 mb-4">
+                Festivo
+            </h1>
+            <p class="text-gray-700 text-lg sm:text-xl mb-8 max-w-2xl mx-auto">
+                Your ultimate event management platform — create, manage, and explore events with ease and elegance.
+            </p>
+            <a href="{%url 'event_list'%}"
+                class="inline-block px-6 py-3 border-2 border-blue-600 text-blue-600 font-medium text-lg rounded-md hover:bg-blue-50 transition duration-200">
+                View All Events
+            </a>
+            <p class="mt-4 text-gray-500">
+                Discover what's happening around you, and be part of the experience.
+            </p>
+        </div>
+    </section>
+{% endblock %}

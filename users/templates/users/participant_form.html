@@ -1,0 +1,23 @@
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-gray-700 font-medium">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="text-sm text-gray-500 mt-1">
+                        {{ field.help_text|safe }}
+                    </div>
+                {% endif %}
+                {% if field.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+            Submit
+        </button>
+    </form>

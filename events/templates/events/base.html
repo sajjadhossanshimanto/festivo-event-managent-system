@@ -1,4 +1,5 @@
 {% load static %}
+{% load group_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +14,7 @@
     Keeping Tailwind CSS CDN because switching to a static version significantly altered the page layout and styling. (I made the design first with CDN and copy pasted those file in templates)
     {% endcomment %}
 
-    {% comment %} <link rel="stylesheet" href="{% static 'css/output.css' %}" /> {% endcomment %}
+    <!-- <link rel="stylesheet" href="{% static 'css/output.css' %}" /> -->
 
     <!-- Google Font: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,7 +29,7 @@
     </style>
 </head>
 
-<body class="pt-16 bg-gray-50">
+<body class="pt-16 bg-gray-50 flex flex-col min-h-screen">
     <header>
         <section>
             <!-- Navbar -->
@@ -37,17 +38,16 @@
                     <div class="flex justify-between items-center h-16">
                         <!-- Logo / Website Name -->
                         <div class="text-blue-600 text-4xl font-semibold">
-                            <a href="{% url "event_list" %}">Festivo</a>
+                            <a href="{% url 'home' %}">Festivo</a>
                             
                         </div>
 
                         <!-- Menu items -->
                         <div class="space-x-6">
-                            <a href="{% url "event_create" %}" class="text-gray-700 hover:text-blue-600 text-md font-medium">Create Event</a>
-                            <a href="#event_list" class="text-gray-700 hover:text-blue-600 text-md font-medium">View All
-                                Events</a>
-                            <a href="{% url 'participant_list' %}" class="text-gray-700 hover:text-blue-600 text-md font-medium">Participate</a>
-                            <a href="{% url 'category_list' %}" class="text-gray-700 hover:text-blue-600 text-md font-medium">Categories</a>
+                            {% group_features as features %}
+                            {% for label, link in features %}
+                                <a href="{% url link %}" class="text-gray-700 hover:text-blue-600 text-md font-medium">{{label}}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -68,9 +68,10 @@
         </section>
     </header>
 
-    {% block mainBody %}
-        {% comment %} Main Body will be here {% endcomment %}
-    {% endblock mainBody %}
+    <main class="flex-grow pt-20">
+        {% block mainBody %}
+        {% endblock mainBody %}
+    </main>
 
     <footer class="bg-white border-t mt-12">
         <div
