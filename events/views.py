@@ -143,3 +143,6 @@ def category_delete(request, id):
     return render(request, 'events/category_confirm_delete.html', {'category': category})
 
 
+# :: intro ::
+def home(request):
+    return render(request, 'events/intro.html')
