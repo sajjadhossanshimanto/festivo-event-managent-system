@@ -5,25 +5,27 @@
     <!-- Statistics Section -->
     <section class="max-w-[1440px] mx-auto px-4 py-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <!-- Total Events Card -->
+            <!-- Card -->
             <a href="?type=all" class="block bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
                 <div class="text-4xl font-extrabold text-blue-600 mb-2">{{ stats.total }}</div>
-                <div class="text-gray-700 text-lg font-medium">Total Events</div>
+                <div class="text-gray-700 text-lg font-medium">ALL Events</div>
             </a>
 
-            <!-- Past Events Card -->
+            <a href="?type=rsvp" class="block bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
+                <div class="text-4xl font-extrabold text-blue-600 mb-2">{{ stats.total_rspv }}</div>
+                <div class="text-gray-700 text-lg font-medium">RSVP Events</div>
+            </a>
+
             <a href="?type=past" class="block bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
                 <div class="text-4xl font-extrabold text-blue-600 mb-2">{{ stats.past }}</div>
                 <div class="text-gray-700 text-lg font-medium">Past Events</div>
             </a>
 
-            <!-- Upcoming Events Card -->
             <a href="?type=upcoming" class="block bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
                 <div class="text-4xl font-extrabold text-blue-600 mb-2">{{ stats.upcoming }}</div>
                 <div class="text-gray-700 text-lg font-medium">Upcoming Events</div>
             </a>
 
-            <!-- Today's Events Card -->
             <a href="?type=today" class="block bg-white shadow-md rounded-lg p-6 text-center hover:shadow-lg transition">
                 <div class="text-4xl font-extrabold text-blue-600 mb-2">{{ stats.today }}</div>
                 <div class="text-gray-700 text-lg font-medium">Today's Events</div>

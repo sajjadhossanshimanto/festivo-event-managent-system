@@ -12,6 +12,7 @@ from events.forms import EventForm, CategoryForm
 # :: events related functions ::
 @permission_required('view_event', login_url='no-permission')
 def event_list(request):
+    user = request.user
     today = now().date()
     type_ = request.GET.get('type', 'all')
     # type = type if type in ['past', 'upcoming', 'all'] else 'today'
@@ -24,14 +25,15 @@ def event_list(request):
         type_ = 'all'
         events = events.filter(category__id=category_filter)
 
-    # Date-based 
+
     if type_ == 'past':
         events = events.filter(date__lt=today)
     elif type_ == 'upcoming':
         events = events.filter(date__gt=today)
     elif type_ == 'today':
         events = events.filter(date=today)
-
+    elif type_ == 'rsvp':
+        events = user.rsvp.all()
 
     search_query = request.GET.get('q')
 
@@ -43,14 +45,15 @@ def event_list(request):
 
 
     events = events.select_related('category').prefetch_related('rsvp').order_by('date', 'time')
-    rsvp_items = request.user.rsvp.values_list('id', flat=True)
-    print(rsvp_items)
+    rsvp_items = user.rsvp.values_list('id', flat=True)
+    # print(rsvp_items)
 
     context = {
         'events': events,
         'categories': Category.objects.all(),
         'stats': {
             'total': Event.objects.count(),
+            'total_rspv': len(rsvp_items),
             'past': Event.objects.filter(date__lt=today).count(),
             'upcoming': Event.objects.filter(date__gt=today).count(),
             'today': Event.objects.filter(date=today).count(),
