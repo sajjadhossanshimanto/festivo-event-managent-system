@@ -112,8 +112,9 @@ def event_delete(request, id):
 
 @login_required(login_url='login')
 def rsvp_event(request, user_id, event_id):
-    print(user_id, event_id)
+    # print(user_id, event_id)
     Event.objects.get(id=event_id).rsvp.add(User.objects.get(id=user_id))
+    messages.success(request, "Rsvp was sucessfull")
     return redirect('event_list')
 
 # :: Category ::
