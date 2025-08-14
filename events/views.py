@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.utils.timezone import now
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -12,103 +15,106 @@ from users.views import is_admin, is_manager
 
 # :: events related functions ::
 
-@login_required(login_url='login')
-@permission_required('events.view_event', login_url='no-permission')
-def event_list(request):
-    user = request.user
-    today = now().date()
-    type_ = request.GET.get('type', 'all')
-    # type = type if type in ['past', 'upcoming', 'all'] else 'today'
-    category_filter = request.GET.get('category')
 
-    events = Event.objects.all()
-
-    # Category-based 
-    if category_filter:
-        type_ = 'all'
-        events = events.filter(category__id=category_filter)
-
-
-    if type_ == 'past':
-        events = events.filter(date__lt=today)
-    elif type_ == 'upcoming':
-        events = events.filter(date__gt=today)
-    elif type_ == 'today':
-        events = events.filter(date=today)
-    elif type_ == 'rsvp':
-        events = user.rsvp.all()
-
-    search_query = request.GET.get('q')
-
-    if search_query:
-        events = events.filter(
-            Q(name__icontains=search_query) |
-            Q(location__icontains=search_query) |
-            Q(description__icontains=search_query) 
-        )
-
-
-    events = events.select_related('category').prefetch_related('rsvp').order_by('date', 'time')
-    rsvp_items = user.rsvp.values_list('id', flat=True)
-    # print(rsvp_items)
-
-    context = {
-        'events': events,
-        'categories': Category.objects.all(),
-        'stats': {
+class EventListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Event
+    template_name = 'events/event_list.html'
+    context_object_name = 'events'
+    permission_required = 'events.view_event'
+    login_url = 'login'
+    raise_exception = False
+    redirect_field_name = None
+    def get_queryset(self):
+        user = self.request.user
+        today = now().date()
+        type_ = self.request.GET.get('type', 'all')
+        category_filter = self.request.GET.get('category')
+        events = Event.objects.all()
+        if category_filter:
+            type_ = 'all'
+            events = events.filter(category__id=category_filter)
+        if type_ == 'past':
+            events = events.filter(date__lt=today)
+        elif type_ == 'upcoming':
+            events = events.filter(date__gt=today)
+        elif type_ == 'today':
+            events = events.filter(date=today)
+        elif type_ == 'rsvp':
+            events = user.rsvp.all()
+        search_query = self.request.GET.get('q')
+        if search_query:
+            events = events.filter(
+                Q(name__icontains=search_query) |
+                Q(location__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
+        return events.select_related('category').prefetch_related('rsvp').order_by('date', 'time')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        today = now().date()
+        rsvp_items = user.rsvp.values_list('id', flat=True)
+        context['categories'] = Category.objects.all()
+        context['stats'] = {
             'total': Event.objects.count(),
             'total_rspv': len(rsvp_items),
             'past': Event.objects.filter(date__lt=today).count(),
             'upcoming': Event.objects.filter(date__gt=today).count(),
             'today': Event.objects.filter(date=today).count(),
-        },
-        'rsvp_items': rsvp_items,
-    }
-    return render(request, 'events/event_list.html', context)
+        }
+        context['rsvp_items'] = rsvp_items
+        return context
 
-@login_required(login_url='login')
-@permission_required('events.view_event', login_url='no-permission')
-def event_detail(request, id):
-    event = Event.objects.get(id=id)
-    edit_right = is_admin(request.user) or is_manager(request.user)
-    return render(request, 'events/event_detail.html', {'event': event, 'edit_right': edit_right})
 
-@login_required(login_url='login')
-@permission_required('events.add_event', login_url='no-permission')
-def event_create(request):
-    if request.method == 'POST':
-        form = EventForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Event created successfully!')
-            return redirect('event_list')
-    else:
-        form = EventForm()
-    return render(request, 'events/event_form.html', {'form': form})
+class EventDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    model = Event
+    template_name = 'events/event_detail.html'
+    context_object_name = 'event'
+    permission_required = 'events.view_event'
+    login_url = 'login'
+    pk_url_kwarg = 'id'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['edit_right'] = is_admin(self.request.user) or is_manager(self.request.user)
+        return context
 
-@login_required(login_url='login')
-@permission_required('events.change_event', login_url='no-permission')
-def event_update(request, id):
-    event = Event.objects.get(id=id)
-    if request.method == 'POST':
-        form = EventForm(request.POST, request.FILES, instance=event)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Event updated successfully!')
-            return redirect('event_detail', id=event.id)
-    else:
-        form = EventForm(instance=event)
-    return render(request, 'events/event_form.html', {'form': form, 'event': event})
 
-@login_required(login_url='login')
-@permission_required('events.delete_event', login_url='no-permission')
-def event_delete(request, id):
-    event = Event.objects.get(id=id)
-    if request.method == 'POST':
-        event.delete()
+class EventCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'events/event_form.html'
+    permission_required = 'events.add_event'
+    login_url = 'login'
+    success_url = reverse_lazy('event_list')
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Event created successfully!')
+        return response
+
+class EventUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'events/event_form.html'
+    permission_required = 'events.change_event'
+    login_url = 'login'
+    pk_url_kwarg = 'id'
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Event updated successfully!')
+        return response
+    def get_success_url(self):
+        return reverse_lazy('event_detail', kwargs={'id': self.object.id})
+
+class EventDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    model = Event
+    template_name = 'events/event_confirm_delete.html'
+    permission_required = 'events.delete_event'
+    login_url = 'login'
+    pk_url_kwarg = 'id'
+    success_url = reverse_lazy('event_list')
+    def delete(self, request, *args, **kwargs):
         messages.success(request, 'Event deleted successfully!')
-        return redirect('event_list')
-    return render(request, 'events/event_confirm_delete.html', {'event': event})
+        return super().delete(request, *args, **kwargs)
 
 @login_required(login_url='login')
 def rsvp_event(request, user_id, event_id):
