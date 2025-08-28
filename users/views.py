@@ -125,3 +125,6 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+@login_required(login_url='login')
+def view_profile(request):
+    return render(request, 'users/profile.html')

@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import participant_list, participant_update, participant_delete, no_permission
+from users.views import participant_list, participant_update, participant_delete, no_permission, view_profile
 from users import views
 
 
@@ -12,7 +12,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('activate/<int:user_id>/<str:token>/', views.activate_user),
-
+    path('profile', view_profile, name='profile'),
 
     path("unauthurized/", no_permission, name='no-permission'),
 ]
