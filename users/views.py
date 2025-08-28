@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test, per
 
 from users.forms import LoginForm
 from users.models import CustomUser
-from users.forms import UserForm, UserEditForm
+from users.forms import UserForm, UserEditForm, ChangePasswordForm
 
 
 # permisiion functions
@@ -124,6 +124,22 @@ def activate_user(request, user_id:int, token:str):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+@login_required(login_url='login')
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            new_password = form.cleaned_data['new_password1']
+            request.user.set_password(new_password)
+            request.user.save()
+            messages.success(request, "Password changed successfully. Please log in again.")
+            logout(request)
+            return redirect('login')
+    else:
+        form = ChangePasswordForm(request.user)
+    return render(request, 'users/change_password.html', {'form': form})
 
 @login_required(login_url='login')
 def view_profile(request):

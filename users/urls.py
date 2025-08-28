@@ -12,7 +12,9 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('activate/<int:user_id>/<str:token>/', views.activate_user),
+
     path('profile', view_profile, name='profile'),
+    path('change-password/', views.change_password, name='change_password'),
 
     path("unauthurized/", no_permission, name='no-permission'),
 ]
