@@ -34,33 +34,37 @@ def participant_list(request):
 @permission_required('users.change_customuser', login_url='no-permission')
 def participant_update(request, id):
     participant = CustomUser.objects.get(id=id)
+    if not is_admin(request.user) and id != request.user.id:
+        return redirect('no-permission')
+
     if request.method == 'POST':
         form = UserEditForm(request.POST, instance=participant)
-
         if form.is_valid():
-            # Check for username uniqueness only if changed
             username = form.cleaned_data.get('username')
             if CustomUser.objects.exclude(id=participant.id).filter(username=username).exists():
                 form.add_error('username', 'This username is already taken.')
             else:
                 user = form.save(commit=False)
-                # Update role (group)
-                role = form.cleaned_data.get('role')
-                if role:
-                    user.groups.clear()
-                    user.groups.add(role)
-                else:
-                    user.groups.clear()
+                # Only admin can change role (group)
+                if is_admin(request.user):
+                    role = form.cleaned_data.get('role')
+                    if role:
+                        user.groups.clear()
+                        user.groups.add(role)
+                    else:
+                        user.groups.clear()
                 user.save()
                 messages.success(request, "Participant updated successfully!")
-                return redirect('participant_list')
+                return redirect('participant_list' if is_admin(request.user) else 'view_profile')
     else:
         form = UserEditForm(instance=participant)
-
         # Pre-select the user's current group
         user_groups = participant.groups.all()
         if user_groups.exists():
             form.fields['role'].initial = user_groups.first().id
+        
+        if not is_admin(request.user):
+            form.fields.pop('role', None)
     return render(request, 'users/participant_edit.html', {'form': form, 'participant': participant})
 
 @login_required(login_url='login')
