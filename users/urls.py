@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import participant_list, participant_update, participant_delete, no_permission, view_profile
+from users.views import participant_list, participant_update, participant_delete, no_permission, view_profile, password_reset_request, password_reset_confirm
 from users import views
 
 
@@ -17,4 +17,8 @@ urlpatterns = [
     path('change-password/', views.change_password, name='change_password'),
 
     path("unauthurized/", no_permission, name='no-permission'),
+
+    # Password reset
+    path('password-reset/', password_reset_request, name='password_reset'),
+    path('reset/<uidb64>/<token>/', password_reset_confirm, name='password_reset_confirm'),
 ]

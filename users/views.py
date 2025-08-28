@@ -9,8 +9,13 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 
 from users.forms import LoginForm
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 from users.models import CustomUser
-from users.forms import UserForm, UserEditForm, ChangePasswordForm
+from users.forms import UserForm, UserEditForm, ChangePasswordForm, CustomSetPassword
 
 
 # permisiion functions
@@ -101,6 +106,47 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'users/login.html', {'form': form})
+
+def password_reset_request(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            users = CustomUser.objects.filter(email=email)
+            if users.exists():
+                user = users.first()
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                reset_url = request.build_absolute_uri(f"/reset/{uid}/{token}/")
+                subject = "Festivo Password Reset"
+                message = render_to_string("users/password_reset_email.txt", {"reset_url": reset_url, "user": user})
+                send_mail(subject, message, None, [email])
+                messages.success(request, "Password reset link sent to your email.")
+                return redirect("login")
+            else:
+                form.add_error("email", "No user found with this email.")
+    else:
+        form = PasswordResetForm()
+    return render(request, "users/password_reset.html", {"form": form})
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == "POST":
+            form = CustomSetPassword(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Password has been reset. You can now log in.")
+                return redirect("login")
+        else:
+            form = CustomSetPassword(user)
+        return render(request, "users/password_reset_confirm.html", {"form": form})
+    else:
+        return HttpResponse("Invalid password reset link.")
 
 def activate_user(request, user_id:int, token:str):
     try:

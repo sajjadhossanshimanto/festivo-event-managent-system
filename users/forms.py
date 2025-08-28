@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, SetPasswordForm
 from django import forms
 from django.contrib.auth.hashers import check_password
 from users.models import CustomUser
@@ -81,3 +81,15 @@ class ChangePasswordForm(forms.Form):
         if new_password1 and new_password2 and new_password1 != new_password2:
             self.add_error('new_password2', "New passwords do not match.")
         return cleaned_data
+
+class CustomSetPassword(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'w-full px-4 py-2 mt-1 border rounded-lg '
+                         'focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': field.label
+            })
+            if field.help_text:
+                field.help_text = f'<span class="block mt-1 text-sm text-gray-500">{field.help_text}</span>'
