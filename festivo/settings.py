@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', "festivo-event-managent-system-1.onrender.com",]
 CFRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'http://127.0.0.1:8000', 'https://festivo-event-managent-system-dgte.onrender.com']
@@ -89,26 +89,26 @@ WSGI_APPLICATION = 'festivo.wsgi.application'
 # }
 
 # For Postgres
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'festivo',
-        'USER': 'postgres',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'festivo',
+#         'USER': 'postgres',
+#         'PASSWORD': '123456',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
 
 
 #for deployment on Render
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://event_management_2_u4je_user:BFOHOezsOPz6VVGD2pZLVQbZaEqzQWKY@dpg-d2eblcadbo4c7388qrg0-a.oregon-postgres.render.com/event_management_2_u4je',
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://fastivo_db_user:VYmm9gZmTWfeAKaTYLRak6TxhgZyuJbs@dpg-d2o802euk2gs73ak1s9g-a.oregon-postgres.render.com/fastivo_db',
+        conn_max_age=600
+    )
+}
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -166,11 +166,10 @@ MEDIA_URL = 'media/'
 
 
 # emails
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD ='asdASD123!@#'
-# EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD')
