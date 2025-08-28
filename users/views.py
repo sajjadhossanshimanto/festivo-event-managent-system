@@ -1,7 +1,7 @@
 from django import forms
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 # from django.contrib.auth.forms import UserForm
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -9,7 +9,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 
 from users.forms import LoginForm
-# from users.models import User
+from users.models import CustomUser
 from users.forms import UserForm, UserEditForm
 
 
@@ -27,20 +27,20 @@ def no_permission(request):
 @login_required(login_url='login')
 @permission_required('events.view_participant', login_url='no-permission')
 def participant_list(request):
-    participants = User.objects.all()
+    participants = CustomUser.objects.all()
     return render(request, 'users/participant_list.html', {'participants': participants})
 
 @login_required(login_url='login')
 @permission_required('events.change_participant', login_url='no-permission')
 def participant_update(request, id):
-    participant = User.objects.get(id=id)
+    participant = CustomUser.objects.get(id=id)
     if request.method == 'POST':
         form = UserEditForm(request.POST, instance=participant)
 
         if form.is_valid():
             # Check for username uniqueness only if changed
             username = form.cleaned_data.get('username')
-            if User.objects.exclude(id=participant.id).filter(username=username).exists():
+            if CustomUser.objects.exclude(id=participant.id).filter(username=username).exists():
                 form.add_error('username', 'This username is already taken.')
             else:
                 user = form.save(commit=False)
@@ -66,7 +66,7 @@ def participant_update(request, id):
 @login_required(login_url='login')
 @permission_required('events.delete_participant', login_url='no-permission')
 def participant_delete(request, id):
-    participant = User.objects.get(id=id)
+    participant = CustomUser.objects.get(id=id)
     if request.method == 'POST':
         participant.delete()
         messages.success(request, "Participant deleted successfully!")
@@ -104,8 +104,8 @@ def login_view(request):
 
 def activate_user(request, user_id:int, token:str):
     try:
-        user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
         return HttpResponse("user does not exist")
 
     if default_token_generator.check_token(user, token):

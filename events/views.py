@@ -4,13 +4,13 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.utils.timezone import now
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.db.models import Q
 
 from events.models import Event, Category
 from events.forms import EventForm, CategoryForm
 from users.views import is_admin, is_manager
+from users.models import CustomUser
 
 
 # :: events related functions ::
@@ -119,7 +119,7 @@ class EventDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 @login_required(login_url='login')
 def rsvp_event(request, user_id, event_id):
     # print(user_id, event_id)
-    Event.objects.get(id=event_id).rsvp.add(User.objects.get(id=user_id))
+    Event.objects.get(id=event_id).rsvp.add(CustomUser.objects.get(id=user_id))
     messages.success(request, "Rsvp was sucessfull")
     return redirect('event_list')
 

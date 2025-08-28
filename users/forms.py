@@ -1,12 +1,14 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
+
+from users.models import CustomUser
 
 
 
 class UserForm(UserCreationForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = [
             'username', 'first_name', 'last_name',
             'email', 'password1', 'password2'
@@ -26,7 +28,7 @@ class UserForm(UserCreationForm):
 # Form for editing users (no password fields)
 class UserEditForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = [
             'username', 'first_name', 'last_name', 'email'
         ]

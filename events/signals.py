@@ -1,7 +1,7 @@
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from django.core.mail import send_mail
-from django.contrib.auth.models import User
+from users.models import CustomUser
 from events.models import Event
 from django.conf import settings
 
@@ -12,7 +12,7 @@ def rsvp_email_notification(sender, instance, action, pk_set, **kwargs):
 		event = instance
 		for user_id in pk_set:
 			try:
-				user = User.objects.get(pk=user_id)
+				user = CustomUser.objects.get(pk=user_id)
 				send_mail(
 					subject=f'RSVP Confirmation for {event.name}',
 					message=f'Hi {user.username},\n\nYou have successfully RSVPed to the event: {event.name} on {event.date} at {event.location}.',
@@ -20,5 +20,5 @@ def rsvp_email_notification(sender, instance, action, pk_set, **kwargs):
 					recipient_list=[user.email],
 					fail_silently=True,
 				)
-			except User.DoesNotExist:
+			except CustomUser.DoesNotExist:
 				pass

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 
 def file_location(instance, filename):
@@ -21,7 +21,7 @@ class Event(models.Model):
     time = models.TimeField()
     location = models.CharField(max_length=200)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='events')
-    rsvp = models.ManyToManyField(User, related_name='rsvp')
+    rsvp = models.ManyToManyField(CustomUser, related_name='rsvp')
 
     def __str__(self):
         return self.name
