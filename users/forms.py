@@ -11,7 +11,7 @@ class UserForm(UserCreationForm):
         model = CustomUser
         fields = [
             'profile_image', 'username', 'first_name', 'last_name',
-            'email', 'password1', 'password2', 'bio'
+            'email', 'phone_number', 'password1', 'password2', 'bio'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -30,7 +30,7 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = [
-            'username', 'first_name', 'last_name', 'email'
+            'username', 'first_name', 'last_name', 'email', 'phone_number'
         ]
 
     def __init__(self, *args, **kwargs):

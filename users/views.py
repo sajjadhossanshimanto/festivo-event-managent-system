@@ -60,7 +60,7 @@ def participant_update(request, id):
                         user.groups.clear()
                 user.save()
                 messages.success(request, "Participant updated successfully!")
-                return redirect('participant_list' if is_admin(request.user) else 'view_profile')
+                return redirect('participant_list' if is_admin(request.user) else 'profile')
     else:
         form = UserEditForm(instance=participant)
         # Pre-select the user's current group
