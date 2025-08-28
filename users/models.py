@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
         upload_to='users/profile', blank=True, default="users/profile/default.png"
     )
     bio = models.TextField(blank=True)
+    last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'<CustomUser: {self.username}>'
