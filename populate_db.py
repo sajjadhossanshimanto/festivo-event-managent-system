@@ -1,9 +1,12 @@
 import os
-import django
-from faker import Faker
 import random
-from events.models import Category, Event, Participant
+
+import django
 from django.contrib.auth.models import Group
+from faker import Faker
+
+from events.models import Category, Event
+from users.models import CustomUser
 
 # Set up Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'task_management.settings')
@@ -23,7 +26,18 @@ def populate_db():
     print(f"Created {len(categories)} projects.")
 
     # Create Employees
-    events = []
+    persons = []
+    for _ in range(20):
+        person = CustomUser.objects.create(
+            username = fake.name(),
+            first_name = fake.first_name(),
+            last_name = fake.last_name(),
+            email = fake.email()
+        )
+        person.is_active = True
+        persons.append(person)
+    print(f'created {len(persons)} persons`')
+    
     for _ in range(10):
         u = Event.objects.create(
             name = fake.sentence(),
@@ -33,15 +47,7 @@ def populate_db():
             location = " ".join(fake.location_on_land()[2:]),
             category = random.choice(categories)
         )
-        events.append(u)
-    print(f"Created {len(events)} employees.")
+        u.rsvp.set(random.sample(persons, random.randint(1, 3)))
 
-    # Create Tasks
-    for _ in range(20):
-        person = Participant.objects.create(
-            name = fake.name(),
-            email = fake.email()
-        )
-        person.events.set(random.sample(events, random.randint(1, 3)))
-
+    
     print(f"Created 20 tasks.")
