@@ -25,13 +25,13 @@ def no_permission(request):
 
 # participant-functions 
 @login_required(login_url='login')
-@permission_required('events.view_participant', login_url='no-permission')
+@permission_required('users.view_customuser', login_url='no-permission')
 def participant_list(request):
     participants = CustomUser.objects.all()
     return render(request, 'users/participant_list.html', {'participants': participants})
 
 @login_required(login_url='login')
-@permission_required('events.change_participant', login_url='no-permission')
+@permission_required('users.change_customuser', login_url='no-permission')
 def participant_update(request, id):
     participant = CustomUser.objects.get(id=id)
     if request.method == 'POST':
@@ -64,7 +64,7 @@ def participant_update(request, id):
     return render(request, 'users/participant_edit.html', {'form': form, 'participant': participant})
 
 @login_required(login_url='login')
-@permission_required('events.delete_participant', login_url='no-permission')
+@permission_required('users.delete_customuser', login_url='no-permission')
 def participant_delete(request, id):
     participant = CustomUser.objects.get(id=id)
     if request.method == 'POST':
